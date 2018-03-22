@@ -15,7 +15,8 @@ def normalizeRows(x):
     """
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    norm_ = np.linalg.norm(x, axis=1, keepdims=True)
+    x = x/norm_
     ### END YOUR CODE
 
     return x
@@ -58,7 +59,12 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    prob = softmax(outputVectors[target, :].dot(predicted))
+    cost = -np.log(prob[target])
+    d = prob.copy()
+    d[target] -= 1 # y_hat - y
+    gradPred = outputVectors.T.dot(d)
+    grad = d[:,np.newaxis].dot(predicted[np.newaxis,:])
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -96,9 +102,13 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices.extend(getNegativeSamples(target, dataset, K))
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    for ind in indices:
+        if ind == target:
+            cost -= np.log(sigmoid(outputVectors[ind,:].dot(predicted)))
+        else:
+            cost -= np.log(sigmoid( -outputVectors[ind,:].dot(predicted)))
     ### END YOUR CODE
-
+    gradPred = 1-sigmoid(sigmoid(outputVectors
     return cost, gradPred, grad
 
 

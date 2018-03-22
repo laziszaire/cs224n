@@ -101,14 +101,21 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices = [target]
     indices.extend(getNegativeSamples(target, dataset, K))
 
-    ### YOUR CODE HERE
-    for ind in indices:
-        if ind == target:
-            cost -= np.log(sigmoid(outputVectors[ind,:].dot(predicted)))
-        else:
-            cost -= np.log(sigmoid( -outputVectors[ind,:].dot(predicted)))
-    ### END YOUR CODE
-    gradPred = 1-sigmoid(sigmoid(outputVectors
+    # labels: 1, positive sample; -1, negative sample
+    labels = -np.ones_like(indices)
+    labels[0] = 1
+
+    z = outputVectors[indices,:].dot(predicted)*labels
+    prob = sigmoid(z)
+
+    # cost
+    cost = -np.sum(np.log(prob))
+
+    # grad
+    grad = np.zeros_like(outputVectors)
+    gradPred = outputVectors[indices,:].dot((-labels)*(1-prob))
+    _p = -labels*(1-prob)
+    grad[indices,:] = _p[:,np.newaxis].dot(predicted[np.newaxis,:])
     return cost, gradPred, grad
 
 
@@ -141,7 +148,15 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    vc_ind = tokens[currentWord]
+    vc = inputVectors[vc_ind,:]
+    u_ind = [tokens[w] for w in contextWords]
+    for ui in u_ind:
+        cost_, gradIn_, gradOut_ = \
+            word2vecCostAndGradient(vc, ui, outputVectors, dataset)
+        cost += cost_
+        gradIn[vc_ind,:] += gradIn_
+        gradOut += gradOut_
     ### END YOUR CODE
 
     return cost, gradIn, gradOut

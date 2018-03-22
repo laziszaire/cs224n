@@ -113,9 +113,9 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
 
     # grad
     grad = np.zeros_like(outputVectors)
-    gradPred = outputVectors[indices,:].dot((-labels)*(1-prob))
+    gradPred = outputVectors[indices,:].T.dot((-labels)*(1-prob))
     _p = -labels*(1-prob)
-    grad[indices, :] = _p[:, np.newaxis].dot(predicted[np.newaxis, :])
+    grad[indices, :] += _p[:, np.newaxis].dot(predicted[np.newaxis, :])
     return cost, gradPred, grad
 
 

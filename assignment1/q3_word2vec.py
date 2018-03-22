@@ -59,10 +59,10 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """
 
     ### YOUR CODE HERE
-    prob = softmax(outputVectors[target, :].dot(predicted))
+    prob = softmax(outputVectors.dot(predicted))
     cost = -np.log(prob[target])
     d = prob.copy()
-    d[target] -= 1 # y_hat - y
+    d[target] -= 1  # y_hat - y
     gradPred = outputVectors.T.dot(d)
     grad = d[:,np.newaxis].dot(predicted[np.newaxis,:])
     ### END YOUR CODE
@@ -115,7 +115,7 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     grad = np.zeros_like(outputVectors)
     gradPred = outputVectors[indices,:].dot((-labels)*(1-prob))
     _p = -labels*(1-prob)
-    grad[indices,:] = _p[:,np.newaxis].dot(predicted[np.newaxis,:])
+    grad[indices, :] = _p[:, np.newaxis].dot(predicted[np.newaxis, :])
     return cost, gradPred, grad
 
 
@@ -155,7 +155,7 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
         cost_, gradIn_, gradOut_ = \
             word2vecCostAndGradient(vc, ui, outputVectors, dataset)
         cost += cost_
-        gradIn[vc_ind,:] += gradIn_
+        gradIn += gradIn_
         gradOut += gradOut_
     ### END YOUR CODE
 
@@ -180,7 +180,6 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    raise NotImplementedError
     ### END YOUR CODE
 
     return cost, gradIn, gradOut

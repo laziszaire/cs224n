@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import numpy as np
 import random
@@ -64,7 +65,7 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     d = prob.copy()
     d[target] -= 1  # y_hat - y
     gradPred = outputVectors.T.dot(d)
-    grad = d[:,np.newaxis].dot(predicted[np.newaxis,:])
+    grad = d[:, np.newaxis].dot(predicted[np.newaxis, :])
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -105,7 +106,7 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     labels = -np.ones_like(indices)
     labels[0] = 1
 
-    z = outputVectors[indices,:].dot(predicted)*labels
+    z = outputVectors[indices, :].dot(predicted)*labels
     prob = sigmoid(z)
 
     # cost
@@ -113,9 +114,12 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
 
     # grad
     grad = np.zeros_like(outputVectors)
-    gradPred = outputVectors[indices,:].T.dot((-labels)*(1-prob))
+    gradPred = outputVectors[indices, :].T.dot((-labels)*(1-prob))
     _p = -labels*(1-prob)
-    grad[indices, :] += _p[:, np.newaxis].dot(predicted[np.newaxis, :])
+    grad_ = _p[:, np.newaxis].dot(predicted[np.newaxis, :])
+    for _idx in xrange(len(indices)):
+
+        grad[indices[_idx], :] += grad_[_idx, :]  # 所有uw的梯度相加，就是按照公式来的，证明公式推导是对的
     return cost, gradPred, grad
 
 
@@ -149,13 +153,13 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
 
     ### YOUR CODE HERE
     vc_ind = tokens[currentWord]
-    vc = inputVectors[vc_ind,:]
+    predicted = inputVectors[vc_ind,:]
     u_ind = [tokens[w] for w in contextWords]
     for ui in u_ind:
-        cost_, gradIn_, gradOut_ = \
-            word2vecCostAndGradient(vc, ui, outputVectors, dataset)
+        cost_, grad_vc, gradOut_ = \
+            word2vecCostAndGradient(predicted, ui, outputVectors, dataset)
         cost += cost_
-        gradIn += gradIn_
+        gradIn[vc_ind, :] += grad_vc  # gradIn #numword x worddim, vc是inputwords中的一个向量
         gradOut += gradOut_
     ### END YOUR CODE
 
@@ -180,6 +184,17 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
+
+    vc_ind = [tokens[w] for w in contextWords]
+    predicted = np.sum(inputVectors[vc_ind, :], axis=0)  # v_hat
+    ui = tokens[currentWord]
+    # cost
+    cost, grad_pred, gradOut = \
+        word2vecCostAndGradient(predicted, ui, outputVectors, dataset)
+
+    # grad
+    for i in xrange(len(vc_ind)):
+        gradIn[vc_ind[i], :] += grad_pred    # 每个input vector都是一样grad
     ### END YOUR CODE
 
     return cost, gradIn, gradOut

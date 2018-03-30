@@ -148,7 +148,7 @@ class SoftmaxModel(Model):
         ### YOUR CODE HERE
         # add optimizer
         optimizer = tf.train.GradientDescentOptimizer(self.config.lr)
-        train_op = optimizer.minimize()
+        train_op = optimizer.minimize(loss) # loss is input
         ### END YOUR CODE
         return train_op
 

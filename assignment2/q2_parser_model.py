@@ -144,10 +144,10 @@ class ParserModel(Model):
         hidden_size = self.config.hidden_size
         embed_size = self.config.embed_size
         n_classes = self.config.n_classes
-        W = tf.Variable(xavier_init(n_features*embed_size, hidden_size))
-        b1 = tf.Variable(xavier_init(1, hidden_size))
-        U = tf.variable(xavier_init(hidden_size, n_classes))
-        b2 = tf.variable(xavier_init(1, n_classes))
+        W = tf.Variable(xavier_init((n_features*embed_size, hidden_size)))
+        b1 = tf.Variable(xavier_init((1, hidden_size)))
+        U = tf.variable(xavier_init((hidden_size, n_classes)))
+        b2 = tf.variable(xavier_init((1, n_classes)))
         h = tf.nn.relu(tf.add(tf.matmul(x, W), b1))  # h = Relu(xW + b1)
         h_drop = tf.nn.dropout(h, 1-self.dropout_placeholder)
         pred = tf.add(tf.matmul(h_drop, U), b2)  # pred = hdropU + b2

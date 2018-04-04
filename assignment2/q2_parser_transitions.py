@@ -82,7 +82,7 @@ def minibatch_parse(sentences, model, batch_size):
     ### YOUR CODE HERE
     partial_parses = [PartialParse(s) for s in sentences]
     unfinished_parses = partial_parses[:]  # shallow copy
-    while unfinished_parses:
+    while len(unfinished_parses) > 0:
         mini_parses = unfinished_parses[:batch_size]
         transitions = model.predict(mini_parses)
         for parse, trans in zip(mini_parses, transitions):

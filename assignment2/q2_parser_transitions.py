@@ -20,7 +20,7 @@ class PartialParse(object):
         # The sentence being parsed is kept for bookkeeping purposes. Do not use it in your code.
         self.sentence = sentence
         self.stack = ['ROOT']
-        self.buffer = list(sentence)
+        self.buffer = [word for word in sentence]
         self.dependencies = []
 
 
@@ -82,8 +82,7 @@ def minibatch_parse(sentences, model, batch_size):
     ### YOUR CODE HERE
     partial_parses = [PartialParse(s) for s in sentences]
     unfinished_parses = partial_parses[:]  # shallow copy
-    while len(unfinished_parses) > 0:
-        print(len(unfinished_parses[:batch_size]))
+    while unfinished_parses:
         mini_parses = unfinished_parses[:batch_size]
         transitions = model.predict(mini_parses)
         for parse, trans in zip(mini_parses, transitions):

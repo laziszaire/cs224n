@@ -88,6 +88,7 @@ class ParserModel(Model):
 
                      self.dropout_placeholder: dropout}
         if labels_batch is not None:
+            # evalue is None of shape()
             feed_dict[self.labels_placeholder] = labels_batch
         ### END YOUR CODE
         return feed_dict

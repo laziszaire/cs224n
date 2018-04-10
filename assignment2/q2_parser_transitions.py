@@ -85,6 +85,7 @@ def minibatch_parse(sentences, model, batch_size):
     while unfinished_parses:
         mini_parses = unfinished_parses[:batch_size]
         transitions = model.predict(mini_parses)
+
         for parse, trans in zip(mini_parses, transitions):
             parse.parse_step(trans)
             if len(parse.buffer) < 1 and len(parse.stack) < 2:

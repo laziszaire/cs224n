@@ -85,8 +85,10 @@ class ParserModel(Model):
         """
         ### YOUR CODE HERE
         feed_dict = {self.input_placeholder: inputs_batch,
-                     self.labels_placeholder: labels_batch,
+
                      self.dropout_placeholder: dropout}
+        if labels_batch is not None:
+            feed_dict[self.labels_placeholder] = labels_batch
         ### END YOUR CODE
         return feed_dict
 

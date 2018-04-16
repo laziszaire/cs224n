@@ -97,9 +97,9 @@ def make_windowed_data(data, start, end, window_size = 1):
     windowed_data = []
     for sentence, labels in data:
         ### YOUR CODE HERE (5-20 lines)
-        s_ = start*window_size + sentence + end*window_size
+        s_ = [start]*window_size + sentence + [end]*window_size
         for wid in range(len(sentence)):
-            a = (s_[wid:(wid+2*window_size+1)], labels[wid])
+            a = (sum(s_[wid:(wid+2*window_size+1)], []), labels[wid])
             windowed_data.append(a)
         ### END YOUR CODE
     return windowed_data

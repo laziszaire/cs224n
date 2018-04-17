@@ -135,8 +135,8 @@ class WindowModel(NERModel):
         ### YOUR CODE HERE (~3-5 lines)
         self.input_placeholder = tf.placeholder(tf.int32,
                                                 shape=(None, self.config.n_window_features))
-        self.labels_placeholder = tf.placeholder(tf.int32, (None,))
-        self.dropout_placeholder = tf.placeholder(tf.float32, 1)
+        self.labels_placeholder = tf.placeholder(tf.int32, shape=(None,))
+        self.dropout_placeholder = tf.placeholder(tf.float32, shape=None)
         ### END YOUR CODE
 
     def create_feed_dict(self, inputs_batch, labels_batch=None, dropout=1):

@@ -133,8 +133,8 @@ class WindowModel(NERModel):
         (Don't change the variable names)
         """
         ### YOUR CODE HERE (~3-5 lines)
-        self.input_placeholder = tf.placeholder(tf.int32, shape=[None, self.config.n_window_features], name='input')
-        self.labels_placeholder = tf.placeholder(tf.int32, shape=[None], name='labels')
+        self.input_placeholder = tf.placeholder(tf.int32, shape=(None, self.config.n_window_features), name='input')
+        self.labels_placeholder = tf.placeholder(tf.int32, shape=(None,), name='labels')
         self.dropout_placeholder = tf.placeholder(tf.float32, name='dropout')
         ### END YOUR CODE
 
@@ -223,9 +223,9 @@ class WindowModel(NERModel):
 
         # parameters
         W = tf.get_variable('W', shape=(n_window_features*ebd_size, h_size), initializer=_init_xavier)
-        b1 = tf.get_variable('b1', shape=h_size, initializer=_init_zero)
+        b1 = tf.get_variable('b1', shape=(h_size,), initializer=_init_zero)
         U = tf.get_variable('U', shape=(h_size, n_classes), initializer=_init_xavier)
-        b2 = tf.get_variable('b2', shape=n_classes, initializer=_init_zero)
+        b2 = tf.get_variable('b2', shape=(n_classes,), initializer=_init_zero)
 
         ### YOUR CODE HERE (~10-20 lines)
         h = tf.nn.relu(tf.matmul(x, W) + b1)
@@ -249,7 +249,7 @@ class WindowModel(NERModel):
         """
         ### YOUR CODE HERE (~2-5 lines)
         _loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.labels_placeholder,
-                                                              logits=pred)
+                                                               logits=pred)
         loss = tf.reduce_mean(_loss)
         ### END YOUR CODE
         return loss

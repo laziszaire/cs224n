@@ -60,11 +60,10 @@ class RNNCell(tf.nn.rnn_cell.RNNCell):
 
         # It's always a good idea to scope variables in functions lest they
         # be defined elsewhere!
-        if __name__ == '__main__':
-            _xavier = tf.contrib.layers.xavier_initializer()
-            _const_init = tf.constant_initializer(0)
         with tf.variable_scope(scope):
             ### YOUR CODE HERE (~6-10 lines)
+            _xavier = tf.contrib.layers.xavier_initializer()
+            _const_init = tf.constant_initializer(0)
             W_x = tf.get_variable('W_x', shape=(self.input_size, self.state_size),
                                   dtype=tf.float32, initializer=_xavier)
             W_h = tf.get_variable('W_h', shape=(self.state_size, self.state_size),

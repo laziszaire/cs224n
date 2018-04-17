@@ -185,7 +185,7 @@ class WindowModel(NERModel):
         ### YOUR CODE HERE (!3-5 lines)
         E = tf.Variable(self.pretrained_embeddings)
         embeddings = tf.nn.embedding_lookup(E, self.input_placeholder)
-        embeddings = tf.reshape(embeddings, -1, self.config.n_window_features*self.config.embed_size)
+        embeddings = tf.reshape(embeddings, (-1, self.config.n_window_features*self.config.embed_size))
         ### END YOUR CODE
         return embeddings
 

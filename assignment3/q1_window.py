@@ -185,8 +185,8 @@ class WindowModel(NERModel):
             embeddings: tf.Tensor of shape (None, n_window_features*embed_size)
         """
         ### YOUR CODE HERE (!3-5 lines)
-        E = tf.Variable(self.pretrained_embeddings)
-        embeddings = tf.nn.embedding_lookup(E, self.input_placeholder)
+        corpus_embeddings = tf.Variable(self.pretrained_embeddings)
+        embeddings = tf.nn.embedding_lookup(corpus_embeddings, self.input_placeholder)
         embeddings = tf.reshape(embeddings, (-1, self.config.n_window_features*self.config.embed_size))
         ### END YOUR CODE
         return embeddings
@@ -277,7 +277,7 @@ class WindowModel(NERModel):
             train_op: The Op for training.
         """
         ### YOUR CODE HERE (~1-2 lines)
-        optimizer = tf.train.AdamOptimizer()
+        optimizer = tf.train.AdamOptimizer(self.config.lr)
         train_op = optimizer.minimize(loss)
         ### END YOUR CODE
         return train_op

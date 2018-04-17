@@ -158,13 +158,10 @@ class WindowModel(NERModel):
             feed_dict: The feed dictionary mapping from placeholders to values.
         """
         ### YOUR CODE HERE (~5-10 lines)
-        if labels_batch is None:
-            feed_dict = {self.input_placeholder: inputs_batch,
-                         self.dropout_placeholder: dropout}
-        else:
-            feed_dict = {self.input_placeholder: inputs_batch,
-                         self.dropout_placeholder: dropout,
-                         self.labels_placeholder: labels_batch}
+        feed_dict = {self.input_placeholder: inputs_batch,
+                     self.dropout_placeholder: dropout}
+        if not labels_batch:
+            feed_dict[self.labels_placeholder] = labels_batch
         ### END YOUR CODE
         return feed_dict
 
@@ -186,8 +183,8 @@ class WindowModel(NERModel):
         """
         ### YOUR CODE HERE (!3-5 lines)
         corpus_embeddings = tf.Variable(self.pretrained_embeddings)
-        embeddings = tf.nn.embedding_lookup(corpus_embeddings, self.input_placeholder)
-        embeddings = tf.reshape(embeddings, (-1, self.config.n_window_features*self.config.embed_size))
+        _embeddings = tf.nn.embedding_lookup(corpus_embeddings, self.input_placeholder)
+        embeddings = tf.reshape(_embeddings, (-1, self.config.n_window_features*self.config.embed_size))
         ### END YOUR CODE
         return embeddings
 

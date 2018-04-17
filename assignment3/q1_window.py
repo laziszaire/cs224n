@@ -229,7 +229,7 @@ class WindowModel(NERModel):
         b2 = tf.get_variable('b2', shape=n_classes, initializer=_init_zero)
 
         ### YOUR CODE HERE (~10-20 lines)
-        h = tf.nn.Relu(tf.matmul(x, W) + b1)
+        h = tf.nn.relu(tf.matmul(x, W) + b1)
         h_drop = tf.nn.dropout(h, dropout_rate)
         pred = tf.matmul(h_drop, U) + b2
         ### END YOUR CODE

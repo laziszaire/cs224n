@@ -213,8 +213,8 @@ class WindowModel(NERModel):
         """
 
         x = self.add_embedding()
-        _init_xavier = tf.contrib.layers.xavier_initializer()
-        _init_zero = tf.zeros_initializer()
+        _init_xavier = tf.contrib.layers.xavier_initializer
+        _init_zero = tf.zeros_initializer
         dropout_rate = self.dropout_placeholder
         n_window_features = self.config.n_window_features
         ebd_size = self.config.embed_size
@@ -222,10 +222,10 @@ class WindowModel(NERModel):
         h_size = self.config.hidden_size
 
         # parameters
-        W = tf.get_variable('W', shape=(n_window_features*ebd_size, h_size), dtype=tf.float32, initializer=_init_xavier)
-        b1 = tf.get_variable('b1', shape=(h_size,), dtype=tf.float32, initializer=_init_zero)
-        U = tf.get_variable('U', shape=(h_size, n_classes), dtype=tf.float32, initializer=_init_xavier)
-        b2 = tf.get_variable('b2', shape=(n_classes,), dtype=tf.float32, initializer=_init_zero)
+        W = tf.get_variable('W', shape=(n_window_features*ebd_size, h_size), dtype=tf.float32, initializer=_init_xavier())
+        b1 = tf.get_variable('b1', shape=(h_size,), dtype=tf.float32, initializer=_init_zero())
+        U = tf.get_variable('U', shape=(h_size, n_classes), dtype=tf.float32, initializer=_init_xavier())
+        b2 = tf.get_variable('b2', shape=(n_classes,), dtype=tf.float32, initializer=_init_zero())
 
         ### YOUR CODE HERE (~10-20 lines)
         h = tf.nn.relu(tf.matmul(x, W) + b1)

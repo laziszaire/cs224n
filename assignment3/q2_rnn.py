@@ -144,6 +144,11 @@ class RNNModel(NERModel):
         (Don't change the variable names)
         """
         ### YOUR CODE HERE (~4-6 lines)
+        n_features = self.config.n_features
+        self.input_placeholder = tf.placeholder(dtype=tf.int32, shape=(None, self.max_length, n_features))
+        self.labels_placeholder = tf.placeholder(dtype=tf.int32, shape=(None, self.max_length))
+        self.mask_placeholder = tf.placeholder(dtype=tf.bool, shape=(None, self.max_length))
+        self.dropout_placeholder = tf.placeholder(dtype=tf.float32)
         ### END YOUR CODE
 
     def create_feed_dict(self, inputs_batch, mask_batch, labels_batch=None, dropout=1):
@@ -169,6 +174,11 @@ class RNNModel(NERModel):
             feed_dict: The feed dictionary mapping from placeholders to values.
         """
         ### YOUR CODE (~6-10 lines)
+        feed_dict = {self.input_placeholder: inputs_batch,
+                     self.mask_placeholder: mask_batch,
+                     self.dropout_placeholder: dropout}
+        if labels_batch is not None:
+            feed_dict[self.labels_placeholder] = labels_batch
         ### END YOUR CODE
         return feed_dict
 
@@ -193,6 +203,9 @@ class RNNModel(NERModel):
             embeddings: tf.Tensor of shape (None, max_length, n_features*embed_size)
         """
         ### YOUR CODE HERE (~4-6 lines)
+        word_embeddings = tf.Variable(self.pretrained_embeddings)
+        _embeddings = tf.nn.embedding_lookup(word_embeddings, self.input_placeholder)
+        embeddings = tf.reshape(_embeddings, (-1, self.max_length, self.n_features, self.config.embed_size))
         ### END YOUR CODE
         return embeddings
 
@@ -254,6 +267,11 @@ class RNNModel(NERModel):
         # Define U and b2 as variables.
         # Initialize state as vector of zeros.
         ### YOUR CODE HERE (~4-6 lines)
+        _xavier = tf.contrib.layers.xavier_initializer()
+        _const_init = tf.constant_initializer(0)
+        U = tf.get_variable('U', shape=(self.state_size, self.config.n_classes), dtype=tf.float32, initializer=_xavier)
+        b2 = tf.get_variable('b2', shape=self.config.n_classes, dtype=tf.float32, initializer=_const_init)
+        h_0 = tf.get_variable('h_0', shape=(self.config.batch_size, self.state_size), initializer=_const_init)
         ### END YOUR CODE
 
         with tf.variable_scope("RNN"):

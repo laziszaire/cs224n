@@ -133,8 +133,7 @@ class WindowModel(NERModel):
         (Don't change the variable names)
         """
         ### YOUR CODE HERE (~3-5 lines)
-        self.input_placeholder = tf.placeholder(tf.int32,
-                                                shape=(None, self.config.n_window_features))
+        self.input_placeholder = tf.placeholder(tf.int32, shape=(None, self.config.n_window_features))
         self.labels_placeholder = tf.placeholder(tf.int32, shape=(None,))
         self.dropout_placeholder = tf.placeholder(tf.float32, shape=None)
         ### END YOUR CODE

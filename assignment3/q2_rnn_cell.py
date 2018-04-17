@@ -69,7 +69,8 @@ class RNNCell(tf.nn.rnn_cell.RNNCell):
                                   dtype=tf.float32, initializer=_xavier)
             W_h = tf.get_variable('W_h', shape=(self.state_size, self.state_size),
                                   dtype=tf.float32, initializer=_xavier)
-            b = tf.get_variable('b', shape=1, dtype=tf.float32, initializer=_const_init)
+            # b is a constant vector
+            b = tf.get_variable('b', shape=self.state_size, dtype=tf.float32, initializer=_const_init)
             z = tf.matmul(inputs, W_x) + tf.matmul(state, W_h) + b
             new_state = tf.nn.sigmoid(z, name='sigmoid')
             ### END YOUR CODE ###

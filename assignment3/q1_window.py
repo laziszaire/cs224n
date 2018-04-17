@@ -215,7 +215,7 @@ class WindowModel(NERModel):
 
         x = self.add_embedding()
         _init_xavier = tf.contrib.layers.xavier_initializer()
-        _init_zero = tf.contrib.layers.zeros_initializer()
+        _init_zero = tf.zeros_initializer()
         dropout_rate = self.dropout_placeholder
         n_window_features = self.config.n_window_features
         ebd_size = self.config.embed_size

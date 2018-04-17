@@ -67,7 +67,7 @@ class RNNCell(tf.nn.rnn_cell.RNNCell):
             ### YOUR CODE HERE (~6-10 lines)
             W_x = tf.get_variable('W_x', shape=(self.input_size, self.state_size),
                                   dtype=tf.float32, initializer=_xavier)
-            W_h = tf.get_variable('W_b', shape=(self.state_size, self.state_size),
+            W_h = tf.get_variable('W_h', shape=(self.state_size, self.state_size),
                                   dtype=tf.float32, initializer=_xavier)
             b = tf.get_variable('b', shape=1, dtype=tf.float32, initializer=_const_init)
             z = tf.matmul(inputs, W_x) + tf.matmul(state, W_h) + b

@@ -135,7 +135,7 @@ class WindowModel(NERModel):
         ### YOUR CODE HERE (~3-5 lines)
         self.input_placeholder = tf.placeholder(tf.int32, shape=(None, self.config.n_window_features))
         self.labels_placeholder = tf.placeholder(tf.int32, shape=(None,))
-        self.dropout_placeholder = tf.placeholder(tf.float32, shape=None)
+        self.dropout_placeholder = tf.placeholder(tf.float32)
         ### END YOUR CODE
 
     def create_feed_dict(self, inputs_batch, labels_batch=None, dropout=1):
@@ -251,9 +251,9 @@ class WindowModel(NERModel):
             loss: A 0-d tensor (scalar)
         """
         ### YOUR CODE HERE (~2-5 lines)
-        loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.labels_placeholder,
+        _loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.labels_placeholder,
                                                               logits=pred)
-        loss = tf.reduce_mean(loss)
+        loss = tf.reduce_mean(_loss)
         ### END YOUR CODE
         return loss
 

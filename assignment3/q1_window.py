@@ -222,10 +222,12 @@ class WindowModel(NERModel):
         n_classes = self.config.n_classes
         h_size = self.config.hidden_size
 
-        W = tf.get_variable(shape=(n_window_features*ebd_size, h_size), initializer=_init_xavier)
-        b1 = tf.get_variable(shape=h_size, initializer=_init_zero)
-        U = tf.get_variable(shape=(h_size, n_classes), initializer=_init_xavier)
-        b2 = tf.get_variable(shape=n_classes, initializer=_init_zero)
+        # parameters
+        W = tf.get_variable('W', shape=(n_window_features*ebd_size, h_size), initializer=_init_xavier)
+        b1 = tf.get_variable('b1', shape=h_size, initializer=_init_zero)
+        U = tf.get_variable('U', shape=(h_size, n_classes), initializer=_init_xavier)
+        b2 = tf.get_variable('b2', shape=n_classes, initializer=_init_zero)
+
         ### YOUR CODE HERE (~10-20 lines)
         h = tf.nn.Relu(tf.matmul(x, W) + b1)
         h_drop = tf.nn.dropout(h, dropout_rate)

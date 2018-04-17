@@ -134,7 +134,7 @@ class WindowModel(NERModel):
         """
         ### YOUR CODE HERE (~3-5 lines)
         self.input_placeholder = tf.placeholder(tf.float32,
-                                                shape=(None, self.config.n_windows_features))
+                                                shape=(None, self.config.n_window_features))
         self.labels_placeholder = tf.placeholder(tf.int32, (None,))
         self.dropout_placeholder = tf.placeholder(tf.float32, 1)
         ### END YOUR CODE
@@ -185,7 +185,7 @@ class WindowModel(NERModel):
         ### YOUR CODE HERE (!3-5 lines)
         E = tf.Variable(self.pretrained_embeddings)
         embeddings = tf.nn.embedding_lookup(E, self.input_placeholder)
-        embeddings = tf.reshape(embeddings, -1, self.config.n_windows_features*self.config.embed_size)
+        embeddings = tf.reshape(embeddings, -1, self.config.*self.config.embed_size)
         ### END YOUR CODE
         return embeddings
 
@@ -217,12 +217,12 @@ class WindowModel(NERModel):
         _init_xavier = tf.contrib.layers.xavier_initializer()
         _init_zero = tf.contrib.layers.zeros_initializer()
         dropout_rate = self.dropout_placeholder
-        n_windows_features = self.config.n_windows_features
+        n_window_features = self.config.n_window_features
         ebd_size = self.config.embed_size
         n_classes = self.config.n_classes
         h_size = self.config.hidden_size
 
-        W = tf.get_variable(shape=(n_windows_features*ebd_size, h_size), initializer=_init_xavier)
+        W = tf.get_variable(shape=(n_window_features*ebd_size, h_size), initializer=_init_xavier)
         b1 = tf.get_variable(shape=h_size, initializer=_init_zero)
         U = tf.get_variable(shape=(h_size, n_classes), initializer=_init_xavier)
         b2 = tf.get_variable(shape=n_classes, initializer=_init_zero)

@@ -269,7 +269,7 @@ class RNNModel(NERModel):
         ### YOUR CODE HERE (~4-6 lines)
         _xavier = tf.contrib.layers.xavier_initializer()
         _const_init = tf.constant_initializer(0)
-        U = tf.get_variable('U', shape=(self.state_size, self.config.n_classes), dtype=tf.float32, initializer=_xavier)
+        U = tf.get_variable('U', shape=(Config.hidden_size, self.config.n_classes), dtype=tf.float32, initializer=_xavier)
         b2 = tf.get_variable('b2', shape=self.config.n_classes, dtype=tf.float32, initializer=_const_init)
         h_0 = tf.zeros(Config.hidden_size, dtype=tf.int32, name='h_0')
         ### END YOUR CODE

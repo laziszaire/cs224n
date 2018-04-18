@@ -271,17 +271,26 @@ class RNNModel(NERModel):
         _const_init = tf.constant_initializer(0)
         U = tf.get_variable('U', shape=(self.state_size, self.config.n_classes), dtype=tf.float32, initializer=_xavier)
         b2 = tf.get_variable('b2', shape=self.config.n_classes, dtype=tf.float32, initializer=_const_init)
-        h_0 = tf.get_variable('h_0', shape=(self.config.batch_size, self.state_size), initializer=_const_init)
+        h_0 = tf.zeros(Config.hidden_size, dtype=tf.int32, name='h_0')
         ### END YOUR CODE
 
         with tf.variable_scope("RNN"):
             for time_step in range(self.max_length):
                 ### YOUR CODE HERE (~6-10 lines)
-                pass
+                output, new_state = cell(x[time_step], state=h_0)
+                if time_step != 0:
+                    tf.get_variable_scope().reuse_variables()
+                    U = tf.get_variable('U')
+                    b2 = tf.get_variable('b2')
+                    output, new_state = cell(x[time_step], state=new_state)
+                o_drop_t = tf.nn.dropout(output, dropout_rate)
+                y_t = tf.matmul(o_drop_t, U) + b2
+                preds.append(y_t.copy())
                 ### END YOUR CODE
 
         # Make sure to reshape @preds here.
         ### YOUR CODE HERE (~2-4 lines)
+        preds = tf.stack(preds)
         ### END YOUR CODE
 
         assert preds.get_shape().as_list() == [None, self.max_length, self.config.n_classes], "predictions are not of the right shape. Expected {}, got {}".format([None, self.max_length, self.config.n_classes], preds.get_shape().as_list())
@@ -303,6 +312,10 @@ class RNNModel(NERModel):
             loss: A 0-d tensor (scalar)
         """
         ### YOUR CODE HERE (~2-4 lines)
+        CE = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.labels_placeholder,
+                                                       logits=preds)
+        _loss = CE*self.mask_placeholder
+        loss = tf.reduce_mean(_loss)
         ### END YOUR CODE
         return loss
 
@@ -326,6 +339,7 @@ class RNNModel(NERModel):
             train_op: The Op for training.
         """
         ### YOUR CODE HERE (~1-2 lines)
+        train_op = tf.train.AdamOptimizer.minimize(loss)
         ### END YOUR CODE
         return train_op
 

@@ -272,7 +272,7 @@ class RNNModel(NERModel):
         _const_init = tf.constant_initializer(0)
         U = tf.get_variable('U', shape=(Config.hidden_size, Config.n_classes), dtype=tf.float32, initializer=_xavier)
         b2 = tf.get_variable('b2', shape=Config.n_classes, dtype=tf.float32, initializer=_const_init)
-        state = tf.zeros(tf.shape(_x[0]), dtype=tf.int32, name='h_0')
+        state = tf.zeros(tf.shape(_x[0]), dtype=tf.float32, name='state')
         ### END YOUR CODE
 
         with tf.variable_scope("RNN"):

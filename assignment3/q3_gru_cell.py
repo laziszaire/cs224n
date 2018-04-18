@@ -65,7 +65,9 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
         # be defined elsewhere!
         with tf.variable_scope(scope):
             ### YOUR CODE HERE (~20-30 lines)
-            pass
+            xavier = tf.contrib.layers.xavier_initializer()
+            W_z = tf.get_variable('W_z', shape=(None, self.input_size), dtype=tf.float32)
+            U_z = tf.get_variable('U_z', shape=(None, self.state_size), dtype=tf.float32)
             ### END YOUR CODE ###
         # For a GRU, the output and state are the same (N.B. this isn't true
         # for an LSTM, though we aren't using one of those in our

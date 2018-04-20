@@ -98,8 +98,8 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
 def test_gru_cell():
     with tf.Graph().as_default():
         with tf.variable_scope("test_gru_cell"):
-            x_placeholder = tf.placeholder(tf.float32, shape=(None,3))
-            h_placeholder = tf.placeholder(tf.float32, shape=(None,2))
+            x_placeholder = tf.placeholder(tf.float32, shape=(None, 3))
+            h_placeholder = tf.placeholder(tf.float32, shape=(None, 2))
 
             with tf.variable_scope("gru"):
                 tf.get_variable("W_r", initializer=np.array(np.eye(3,2), dtype=np.float32))

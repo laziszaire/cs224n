@@ -81,7 +81,7 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
             r_t = tf.sigmoid(tf.matmul(x_t, W_r) + tf.matmul(state, U_r) + b_r)
 
             # use r_t to get control the history influence
-            W_o = tf.get_variable('w_o', shape=(self.input_size, self.state_size), dtype=tf.float32, initializer=xavier)
+            W_o = tf.get_variable('W_o', shape=(self.input_size, self.state_size), dtype=tf.float32, initializer=xavier)
             U_o = tf.get_variable('U_o', shape=(self.state_size, self.state_size), dtype=tf.float32, initializer=xavier)
             b_o = tf.get_variable('b_o', shape=(self.state_size,), dtype=tf.float32, initializer=_const_init)
             o_t = tf.tanh(tf.matmul(x_t, W_o) + r_t*tf.matmul(state, U_o) + b_o)

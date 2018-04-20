@@ -66,8 +66,28 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
         with tf.variable_scope(scope):
             ### YOUR CODE HERE (~20-30 lines)
             xavier = tf.contrib.layers.xavier_initializer()
-            W_z = tf.get_variable('W_z', shape=(None, self.input_size), dtype=tf.float32)
-            U_z = tf.get_variable('U_z', shape=(None, self.state_size), dtype=tf.float32)
+            x_t = self.inputplaceholder
+            _const_init = tf.constant_initializer()
+            # update gate
+            W_z = tf.get_variable('W_z', shape=(None, self.input_size, self.state_size), dtype=tf.float32, initializer=xavier)
+            U_z = tf.get_variable('U_z', shape=(None, self.state_size, self.state_size), dtype=tf.float32, initializer=xavier)
+            b_z = tf.get_variable('b_z', shape=(None, self.state_size), dtype=tf.float32, initializer=_const_init)
+            z_t = tf.sigmoid(tf.matmul(x_t, W_z) + tf.matmul(state, U_z) + b_z)
+
+            # reset gate, r_z.shape = (None, state_size)
+            W_r = tf.get_variable('W_r', shape=(None, self.input_size, self.state_size), dtype=tf.float32, initializer=xavier)
+            U_r = tf.get_variable('U_r', shape=(None, self.state_size, self.state_size), dtype=tf.float32, initializer=xavier)
+            b_r = tf.get_variable('b_r', shape=(None, self.state_size), dtype=tf.float32, initializer=_const_init)
+            r_t = tf.sigmoid(tf.matmul(x_t, W_r) + tf.matmul(state, U_r) + b_r)
+
+            # use r_t to get control the history influence
+            W_o = tf.get_variable('w_o', shape=(None, self.input_size, self.state_size), dtype=tf.float32, initializer=xavier)
+            U_o = tf.get_variable('U_o', shape=(None, self.state_size, self.state_size), dtype=tf.float32, initializer=xavier)
+            b_o = tf.get_variable('b_o', shape=(None, self.state_size), dtype=tf.float32, initializer=_const_init)
+            o_t = tf.tanh(tf.matmul(x_t, W_o) + r_t*tf.matmul(state, U_o) + b_o)
+
+            # use z_t to update the state, z_t --> 1 --> strong influence of history
+            new_state = z_t * state + (1-z_t)*o_t
             ### END YOUR CODE ###
         # For a GRU, the output and state are the same (N.B. this isn't true
         # for an LSTM, though we aren't using one of those in our

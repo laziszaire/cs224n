@@ -66,7 +66,7 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
         with tf.variable_scope(scope):
             ### YOUR CODE HERE (~20-30 lines)
             xavier = tf.contrib.layers.xavier_initializer()
-            x_t = self.inputplaceholder
+            x_t = inputs
             _const_init = tf.constant_initializer()
             # update gate
             W_z = tf.get_variable('W_z', shape=(None, self.input_size, self.state_size), dtype=tf.float32, initializer=xavier)

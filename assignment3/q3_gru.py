@@ -85,11 +85,10 @@ class SequencePredictor(Model):
         else:
             raise ValueError("Unsupported cell type.")
 
+        # initial_state=cell.zero_state(self.config.batch_size, dtype=tf.float32),
         x = self.inputs_placeholder
         ### YOUR CODE HERE (~2-3 lines)
-        _preds, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=x,
-                                          initial_state=cell.zero_state(self.config.batch_size, dtype=tf.float32),
-                                          dtype=tf.float32)
+        _preds, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=x, dtype=tf.float32)
         preds = tf.sigmoid(final_state)
         ### END YOUR CODE
         return preds #state # preds

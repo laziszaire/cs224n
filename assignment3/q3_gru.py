@@ -150,10 +150,11 @@ class SequencePredictor(Model):
         # - Remember to clip gradients only if self.config.clip_gradients
         # is True.
         # - Remember to set self.grad_norm
-        grads = optimizer.compute_gradients(loss=loss)
+        grads_and_vars = optimizer.compute_gradients(loss=loss)
+        grads, _vars = zip(*grads_and_vars)
         grads_clipped, _ = tf.clip_by_global_norm(grads, self.config.max_grad_norm)
         self.grad_norm = tf.global_norm(grads_clipped)
-        train_op = optimizer.apply_gradients(grads_clipped)
+        train_op = optimizer.apply_gradients(zip(grads_clipped, _vars))
 
         ### END YOUR CODE
 

@@ -47,25 +47,39 @@ def softmax(x):
     return x
 
 
+def _softmax(x):
+    if len(x.shape) == 1:
+        x -= x.max()
+        _prob = np.exp(x)/np.sum(np.exp(x))
+    elif len(x.shape) > 1:
+        x -= x.max(axis=1, keepdims=True)
+        _prob = np.exp(x)/np.sum(np.exp(x), axis=1, keepdims=True)
+    else:
+        raise ValueError('Input shape is not right')
+
+    assert x.shape == _prob.shape
+    return _prob
+
+
 def test_softmax_basic():
     """
     Some simple tests to get you started.
     Warning: these are not exhaustive.
     """
     print "Running basic tests..."
-    test1 = softmax(np.array([1,2]))
+    test1 = softmax(np.array([1, 2]))
     print test1
     ans1 = np.array([0.26894142,  0.73105858])
     assert np.allclose(test1, ans1, rtol=1e-05, atol=1e-06)
 
-    test2 = softmax(np.array([[1001,1002],[3,4]]))
+    test2 = softmax(np.array([[1001, 1002], [3, 4]]))
     print test2
     ans2 = np.array([
         [0.26894142, 0.73105858],
         [0.26894142, 0.73105858]])
     assert np.allclose(test2, ans2, rtol=1e-05, atol=1e-06)
 
-    test3 = softmax(np.array([[-1001,-1002]]))
+    test3 = softmax(np.array([[-1001, -1002]]))
     print test3
     ans3 = np.array([0.73105858, 0.26894142])
     assert np.allclose(test3, ans3, rtol=1e-05, atol=1e-06)
@@ -84,7 +98,17 @@ def test_softmax():
     ### YOUR CODE HERE
     x = np.random.randn(10)
     x = softmax(x)
+    _ = _softmax(x)
     ### END YOUR CODE
+
+
+def sigmoid(z):
+    return 1/(1+np.exp(-z))
+
+
+def grad_sigmoid(z):
+    a = sigmoid(z)
+    return a(1-a)
 
 
 if __name__ == "__main__":

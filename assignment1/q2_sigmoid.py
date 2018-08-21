@@ -15,8 +15,8 @@ def sigmoid(x):
     """
 
     ### YOUR CODE HERE
-    e = np.exp(x)
-    s = e/(1+e)
+    e = np.exp(-x)
+    s = 1/(1+e)
     ### END YOUR CODE
 
     return s
@@ -73,10 +73,10 @@ def test_sigmoid():
     """
     print "Running your tests..."
     ### YOUR CODE HERE
-    sigmoid(1)
+    assert np.isclose(sigmoid(-1), 0.268941421)
     ### END YOUR CODE
 
 
 if __name__ == "__main__":
-    test_sigmoid_basic();
+    test_sigmoid_basic()
     test_sigmoid()

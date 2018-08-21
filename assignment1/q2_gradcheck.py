@@ -5,6 +5,25 @@ import random
 
 
 # First implement a gradient checker by filling in the following functions
+def gradcheck(f, grad_f, x, h=1e-4, seed=1):
+    fx, gradx = f(x), grad_f(x)
+    _iter = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
+    while not _iter.finished:
+        ix = _iter.multi_index
+        random.seed(seed)
+        _x = x.copy()
+        _x[ix] += h
+        fx_plus = f(_x)
+        _x = x.copy()
+        _x[ix] -= h
+        fx_minus = f(_x)
+        grad_numerical = (fx_plus-fx_minus)/(2*h)
+        if not np.isclose(grad_numerical, gradx[ix]):
+            print "not close"
+        _iter.iternext()
+    print "grad check pass"
+
+
 def gradcheck_naive(f, x):
     """ Gradient check for a function f.
 
@@ -68,11 +87,10 @@ def sanity_check():
     Some basic sanity checks.
     """
     quad = lambda x: (np.sum(x ** 2), x * 2)
-
     print "Running sanity checks..."
     gradcheck_naive(quad, np.array(123.456))      # scalar test
     gradcheck_naive(quad, np.random.randn(3,))    # 1-D test
-    gradcheck_naive(quad, np.random.randn(4,5))   # 2-D test
+    gradcheck_naive(quad, np.random.randn(4, 5))   # 2-D test
     print ""
 
 
@@ -85,6 +103,9 @@ def your_sanity_checks():
     """
     print "Running your sanity checks..."
     ### YOUR CODE HERE
+    _quad = lambda x: np.sum(x ** 2)
+    _grad = lambda x: x * 2
+    gradcheck(_quad, _grad, np.random.randn(4, 5))
     ### END YOUR CODE
 
 

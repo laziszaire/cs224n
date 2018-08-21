@@ -7,7 +7,7 @@ from q2_gradcheck import gradcheck_naive
 from q2_sigmoid import sigmoid, sigmoid_grad
 
 
-def softmax_loss(predicted, outputVectors, target):
+def softmax_loss(predicted, target, outputVectors, dataset):
     vc = predicted
     U = outputVectors
     scores = U.dot(vc)

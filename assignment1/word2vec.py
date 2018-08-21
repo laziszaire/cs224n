@@ -7,15 +7,17 @@ from q2_gradcheck import gradcheck_naive
 from q2_sigmoid import sigmoid, sigmoid_grad
 
 
-def softmax_loss(input,V, U, target):
-    vc = V[input, :]
+def softmax_loss(predicted, outputVectors, target):
+    vc = predicted
+    U = outputVectors
     scores = U.dot(vc)
     probs = softmax(scores)
+    cost = -np.log(probs[target])
     d_score = probs
     d_score[target] -= 1   # gradient of score
     grad_vc = U.T.dot(d_score)
-    grad = d_score[:, np.newaxis].dot(vc[np.newaxis, :]) # gradient of U
-
+    grad_U = d_score[:, np.newaxis].dot(vc[np.newaxis, :]) # gradient of U
+    return cost, grad_vc, grad_U
 
 def negative_samples(target, dataset, K):
 
@@ -31,6 +33,7 @@ def negative_samples(target, dataset, K):
 
 
 def negsampling(predicted, target, outputVectors, dataset, K=10):
+
     indices = [target]
     indices += negative_samples(target, dataset, K)
     labels = -np.ones_like(indices) # indicator of negative samples, sigmoid(-z)
@@ -46,6 +49,6 @@ def negsampling(predicted, target, outputVectors, dataset, K=10):
     _prob = (prob-1)*labels
     grad_pred = _outputVectors.dot(_prob)
     _grad = _prob[:, np.newaxis].dot(predicted[np.newaxis, :])
-    grad = np.zeros_like(outputVectors)
-    grad[indices, :] = _grad
-    return cost, grad_pred, grad
+    grad_U = np.zeros_like(outputVectors)
+    grad_U[indices, :] = _grad
+    return cost, grad_pred, grad_U

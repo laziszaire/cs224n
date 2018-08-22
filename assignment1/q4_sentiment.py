@@ -240,6 +240,23 @@ def main(args):
         outputPredictions(devset, devFeatures, devLabels, bestResult["clf"],
                           "q4_dev_pred.txt")
 
+class C:
+    pass
+
+
+args = C()
+args.yourvectors = True
+args.pretrained = not args.yourvectors
+
+
+def test_main(yourvectors):
+    args = C()
+    args.yourvectors = yourvectors
+    args.pretrained = not args.yourvectors
+    main(args)
+
 
 if __name__ == "__main__":
-    main(getArguments())
+    # main(getArguments())
+    test_main(True)
+    test_main(False)

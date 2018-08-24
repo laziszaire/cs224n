@@ -1,7 +1,6 @@
 .*
+assignment3.zip
 *.pyc
-*.pdf
-.gitignore
 *datasets/
 
 

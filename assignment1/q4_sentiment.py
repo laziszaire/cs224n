@@ -46,10 +46,10 @@ def getSentenceFeatures(tokens, wordVectors, sentence):
     # Output:
     # - sentVector: feature vector for the sentence
 
-    sentVector = np.zeros((wordVectors.shape[1],))
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    indices = (tokens[word] for word in sentence)
+    sentVector = np.mean(wordVectors[indices, :], axis=0)
     ### END YOUR CODE
 
     assert sentVector.shape == (wordVectors.shape[1],)
@@ -62,9 +62,7 @@ def getRegularizationValues():
     Return a sorted list of values to try.
     """
     values = None   # Assign a list of floats in the block below
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    values = np.power(2, np.arange(-2, 10, 1))
     return sorted(values)
 
 
@@ -86,11 +84,8 @@ def chooseBestModel(results):
     Returns:
     Your chosen result dictionary.
     """
-    bestResult = None
-
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    idx = np.argmax((result['dev'] for result in results))
+    bestResult = results[idx]
 
     return bestResult
 
@@ -245,6 +240,23 @@ def main(args):
         outputPredictions(devset, devFeatures, devLabels, bestResult["clf"],
                           "q4_dev_pred.txt")
 
+class C:
+    pass
+
+
+args = C()
+args.yourvectors = True
+args.pretrained = not args.yourvectors
+
+
+def test_main(yourvectors):
+    args = C()
+    args.yourvectors = yourvectors
+    args.pretrained = not args.yourvectors
+    main(args)
+
 
 if __name__ == "__main__":
-    main(getArguments())
+    # main(getArguments())
+    test_main(True)
+    test_main(False)

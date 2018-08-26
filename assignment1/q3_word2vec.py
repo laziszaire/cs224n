@@ -134,10 +134,10 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
 
     Arguments:
     currentWord -- a string of the current center word
-    C -- integer, context size
+    C -- integer, context size, window size
     contextWords -- list of no more than 2*C strings, the context words
     tokens -- a dictionary that maps words to their indices in
-              the word vector list
+              the word vector list {word: index}
     inputVectors -- "input" word vectors (as rows) for all tokens
     outputVectors -- "output" word vectors (as rows) for all tokens
     word2vecCostAndGradient -- the cost and gradient function for
@@ -155,11 +155,11 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     vc_ind = tokens[currentWord]
-    predicted = inputVectors[vc_ind,:]
+    predicted = inputVectors[vc_ind, :]
     u_ind = [tokens[w] for w in contextWords]
     for ui in u_ind:
         cost_, grad_vc, gradOut_ = \
-            word2vecCostAndGradient(predicted, ui, outputVectors, dataset)
+            word2vecCostAndGradient(predicted, ui, outputVectors, dataset)  # 一次一对
         cost += cost_
         gradIn[vc_ind, :] += grad_vc  # gradIn #numword x worddim, vc是inputwords中的一个向量
         gradOut += gradOut_

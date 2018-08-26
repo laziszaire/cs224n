@@ -25,6 +25,7 @@ logger = logging.getLogger("hw3.q1")
 logger.setLevel(logging.DEBUG)
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
+
 class Config:
     """Holds model hyperparams and data information.
 
@@ -34,8 +35,8 @@ class Config:
 
     TODO: Fill in what n_window_features should be, using n_word_features and window_size.
     """
-    n_word_features = 2 # Number of features for every word in the input.
-    window_size = 1 # The size of the window to use.
+    n_word_features = 2  # Number of features for every word in the input.
+    window_size = 1  # The size of the window to use.
     ### YOUR CODE HERE
     n_window_features = n_word_features*(2*window_size+1)  # The total number of features used for each window.
     ### END YOUR CODE
@@ -59,7 +60,7 @@ class Config:
         self.conll_output = self.output_path + "window_predictions.conll"
 
 
-def make_windowed_data(data, start, end, window_size = 1):
+def make_windowed_data(data, start, end, window_size=1):
     """Uses the input sequences in @data to construct new windowed data points.
 
     TODO: In the code below, construct a window from each word in the
@@ -339,10 +340,12 @@ def test_make_windowed_data():
         ([2,0] + [3,3] + [6,0], 3,),
         ]
 
+
 def do_test1(_):
     logger.info("Testing make_windowed_data")
     test_make_windowed_data()
     logger.info("Passed!")
+
 
 def do_test2(args):
     logger.info("Testing implementation of WindowModel")
@@ -366,6 +369,7 @@ def do_test2(args):
 
     logger.info("Model did not crash!")
     logger.info("Passed!")
+
 
 def do_train(args):
     # Set up some parameters.

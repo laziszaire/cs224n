@@ -27,7 +27,7 @@ C = 5
 random.seed(31415)
 np.random.seed(9265)
 
-startTime=time.time()
+startTime = time.time()
 wordVectors = np.concatenate(
     ((np.random.rand(nWords, dimVectors) - 0.5) /
        dimVectors, np.zeros((nWords, dimVectors))),

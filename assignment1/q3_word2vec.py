@@ -71,13 +71,15 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
 
     return cost, gradPred, grad
 
+# tokens
+# corpus
 
 def getNegativeSamples(target, dataset, K):
     """ Samples K indexes which are not the target """
 
     indices = [None] * K
     for k in xrange(K):
-        newidx = dataset.sampleTokenIdx()
+        newidx = dataset.sampleTokenIdx()  # 从所有没有重复的token中抽取
         while newidx == target:
             newidx = dataset.sampleTokenIdx()
         indices[k] = newidx
@@ -119,8 +121,8 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     _p = -labels*(1-prob)
     grad_ = _p[:, np.newaxis].dot(predicted[np.newaxis, :])
     for _idx in xrange(len(indices)):
-
-        grad[indices[_idx], :] += grad_[_idx, :]  # 所有uw的梯度相加，就是按照公式来的，证明公式推导是对的
+        grad[indices[_idx], :] += grad_[_idx, :]  # 所有uw的梯度相加，就是按照公式来的，证明公式推导是对的,
+                                                  # negative sampling可能有重复
     return cost, gradPred, grad
 
 
@@ -152,7 +154,6 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradIn = np.zeros(inputVectors.shape)
     gradOut = np.zeros(outputVectors.shape)
 
-    ### YOUR CODE HERE
     vc_ind = tokens[currentWord]
     predicted = inputVectors[vc_ind,:]
     u_ind = [tokens[w] for w in contextWords]
@@ -162,7 +163,6 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
         cost += cost_
         gradIn[vc_ind, :] += grad_vc  # gradIn #numword x worddim, vc是inputwords中的一个向量
         gradOut += gradOut_
-    ### END YOUR CODE
 
     return cost, gradIn, gradOut
 
@@ -184,8 +184,6 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradIn = np.zeros(inputVectors.shape)
     gradOut = np.zeros(outputVectors.shape)
 
-    ### YOUR CODE HERE
-
     vc_ind = [tokens[w] for w in contextWords]
     predicted = np.sum(inputVectors[vc_ind, :], axis=0)  # v_hat
     ui = tokens[currentWord]
@@ -196,7 +194,6 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     # grad
     for i in xrange(len(vc_ind)):
         gradIn[vc_ind[i], :] += grad_pred    # 每个input vector都是一样grad
-    ### END YOUR CODE
 
     return cost, gradIn, gradOut
 
@@ -214,7 +211,7 @@ def word2vec_sgd_wrapper(word2vecModel, tokens, wordVectors, dataset, C,
     inputVectors = wordVectors[:N/2,:]
     outputVectors = wordVectors[N/2:,:]
     for i in xrange(batchsize):
-        C1 = random.randint(1,C)
+        C1 = random.randint(1, C)
         centerword, context = dataset.getRandomContext(C1)
 
         if word2vecModel == skipgram:

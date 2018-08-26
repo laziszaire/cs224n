@@ -9,14 +9,17 @@ from q2_sigmoid import sigmoid, sigmoid_grad
 from q3_word2vec import normalizeRows
 from collections import Counter
 
+
 def softmax_loss_grad(predicted, outputVectors, target, dataset):
     vc = predicted
     U = outputVectors
     scores = U.dot(vc)
-    probs = softmax(scores)
+    probs = softmax(scores)      # |V|个相加， 计算词库中每个词的概率
     cost = -np.log(probs[target])
     d_score = probs
-    d_score[target] -= 1   # gradient of score： p - y
+    d_score[target] -= 1   # gradient of score（softmax-CE(score))： p - y
+
+    # score = U.dot(vc)
     grad_vc = U.T.dot(d_score)
     grad_U = d_score[:, np.newaxis].dot(vc[np.newaxis, :])  # gradient of U
     return cost, grad_vc, grad_U
@@ -25,6 +28,9 @@ def softmax_loss_grad(predicted, outputVectors, target, dataset):
 def negative_samples(target, dataset, K):
 
     # sample a word that is not the target
+    # 输入（contex)和输出(target)之间是可以重复的 (context, target)
+    # negative samples 不能和 target相同        (context, !target)
+
     indices = [None]*K
     for k in xrange(K):
         while True:
@@ -38,8 +44,9 @@ def negative_samples(target, dataset, K):
 def negsampling(predicted, outputVectors, target, dataset, K=10):
     """
     输入一个词 对应 [一个目标词，一些非目标词]
-    对目标：
-    对非目标：
+    输入词和目标词可以相同
+     d(log_sigmoid(z)/dz = (1-sigmoid(z))
+     d(log_sigmoid(-z)/dz = -(1-sigmoid(-z))
     """
     indices = [target]
     indices += negative_samples(target, dataset, K)
@@ -47,7 +54,7 @@ def negsampling(predicted, outputVectors, target, dataset, K=10):
     labels[0] = 1
     grad_U = np.zeros_like(outputVectors)
     _outputVectors = outputVectors[indices, :]
-    z = labels*_outputVectors.dot(predicted)
+    z = labels*_outputVectors.dot(predicted)    # 只用计算采用的概率
     prob = sigmoid(z)
     cost = -np.sum(np.log(prob))
 
@@ -67,7 +74,7 @@ def skipgram(current_word, window_size, context_words, word2idx, input_vectors, 
              dataset, cost_grad=softmax_loss_grad):
     """
     one step skip-gram word2vec model
-    len(context_words) 个pair
+    一个window多对（len(context_words)）训练样本
     """
     cost = .0
     grad_in = np.zeros_like(input_vectors)
@@ -90,7 +97,7 @@ def cbow(current_word, windowsize, context_words, word2idx, input_vectors, outpu
          dataset, cost_grad=softmax_loss_grad):
     """
     one step continuous bag of words
-    只有一个pair
+    一个窗口（中心词）只有一条样本（一对（contex, target)）
     """
 
     grad_in = np.zeros_like(input_vectors)
@@ -128,6 +135,7 @@ def word2vec_sgd(word2vec_model, word2indx, word_vectors, dataset, window_size,
         grad[:N/2, :] += g_in/batch_size
         grad[N/2:, :] += g_out/batch_size
     return cost, grad
+
 
 def test_word2vec():
 

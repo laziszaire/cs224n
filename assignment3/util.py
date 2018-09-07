@@ -31,6 +31,9 @@ def read_conll(fstream):
     for line in fstream:
         line = line.strip()
         if len(line) == 0 or line.startswith("-DOCSTART-"):
+            # 每个句子是一个tuple，
+            # ((words1, labels1), (words2, labels2))
+            #  其中words1是一句话的词列表，是1个list
             if len(current_toks) > 0:
                 assert len(current_toks) == len(current_lbls)
                 ret.append((current_toks, current_lbls))
@@ -168,7 +171,7 @@ def one_hot(n, y):
         return ret
     elif isinstance(y, list):
         ret = zeros((len(y), n))
-        ret[np.arange(len(y)),y] = 1.0
+        ret[np.arange(len(y)), y] = 1.0
         return ret
     else:
         raise ValueError("Expected an int or list got: " + y)

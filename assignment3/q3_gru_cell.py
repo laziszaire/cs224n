@@ -110,11 +110,11 @@ def test_gru_cell():
                 tf.get_variable("b_z",  initializer=np.array(np.ones(2), dtype=np.float32))
                 tf.get_variable("W_o", initializer=np.array(np.eye(3,2), dtype=np.float32))
                 tf.get_variable("U_o", initializer=np.array(np.eye(2,2), dtype=np.float32))
-                tf.get_variable("b_o",  initializer=np.array(np.ones(2), dtype=np.float32))
+                tf.get_variable("b_o",  initializer=np.array(np.ones(2), dtype=np.float32))  # 复用的时候initializer忽略了
 
             tf.get_variable_scope().reuse_variables()
             cell = GRUCell(3, 2)
-            y_var, ht_var = cell(x_placeholder, h_placeholder, scope="gru")
+            y_var, ht_var = cell(x_placeholder, h_placeholder, scope="gru")  # __call__
 
             init = tf.global_variables_initializer()
             with tf.Session() as session:

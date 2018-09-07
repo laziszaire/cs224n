@@ -104,6 +104,9 @@ class Model(object):
         return predictions
 
     def build(self):
+        # where is the graph?
+        # build的时候 tf会生成一个默认的grpah
+        # class object 只是存储了一些graph中的变量和函数
         self.add_placeholders()
         self.pred = self.add_prediction_op()
         self.loss = self.add_loss_op(self.pred)

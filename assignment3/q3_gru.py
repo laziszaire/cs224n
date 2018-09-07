@@ -63,7 +63,7 @@ class SequencePredictor(Model):
 
     def add_prediction_op(self):
         """Runs an rnn on the input using TensorFlows's
-        @tf.nn.dynamic_rnn function, and returns the final state as a prediction.
+        @tf.nn.dynamic_rnn funtion, and returns the fincal state as a prediction.
 
         TODO:
             - Call tf.nn.dynamic_rnn using @cell below. See:
@@ -88,7 +88,7 @@ class SequencePredictor(Model):
         # initial_state=cell.zero_state(self.config.batch_size, dtype=tf.float32),
         x = self.inputs_placeholder
         ### YOUR CODE HERE (~2-3 lines)
-        _preds, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=x, dtype=tf.float32)
+        _preds, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=x, dtype=tf.float32)  # unroll
         preds = tf.sigmoid(final_state)
         ### END YOUR CODE
         return preds #state # preds
@@ -151,9 +151,13 @@ class SequencePredictor(Model):
         # - Remember to set self.grad_norm
         grads_and_vars = optimizer.compute_gradients(loss=loss)
         grads, _vars = zip(*grads_and_vars)
-        grads_clipped, _ = tf.clip_by_global_norm(grads, self.config.max_grad_norm)
-        self.grad_norm = tf.global_norm(grads_clipped)
-        train_op = optimizer.apply_gradients(zip(grads_clipped, _vars))
+
+        # clip gradients
+        if self.config.clip_gradients:
+            grads, _ = tf.clip_by_global_norm(grads, self.config.max_grad_norm)
+
+        self.grad_norm = tf.global_norm(grads)
+        train_op = optimizer.apply_gradients(zip(grads, _vars))
 
         ### END YOUR CODE
 
@@ -350,7 +354,7 @@ if __name__ == "__main__":
     command_parser.set_defaults(func=do_sequence_prediction)
 
     # Easter egg! Run this function to plot how an RNN or GRU map an
-    # input state to an output state.
+    #     # input state to an output state.
     command_parser = subparsers.add_parser('dynamics', help="Plot cell's dynamics")
     command_parser.add_argument('-o', '--output-prefix', type=str, default="q3", help="Length of sequences to generate")
     command_parser.set_defaults(func=compute_cell_dynamics)

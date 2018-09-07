@@ -100,6 +100,8 @@ def make_windowed_data(data, start, end, window_size=1):
         ### YOUR CODE HERE (5-20 lines)
         s_ = [start]*window_size + sentence + [end]*window_size
         for wid in range(len(sentence)):
+            # 移动N个窗口，N为句子中次的个数，每个窗口是中心词的context
+            # sum(iterable, start=0)
             a = (sum(s_[wid:(wid+2*window_size+1)], []), labels[wid])
             windowed_data.append(a)
         ### END YOUR CODE
@@ -185,7 +187,7 @@ class WindowModel(NERModel):
         ### YOUR CODE HERE (!3-5 lines)
         corpus_embeddings = tf.Variable(self.pretrained_embeddings)
         _embeddings = tf.nn.embedding_lookup(corpus_embeddings, self.input_placeholder)
-        embeddings = tf.reshape(_embeddings, (-1, self.config.n_window_features*self.config.embed_size))
+        embeddings = tf.reshape(_embeddings, (-1, self.config.n_window_features*self.config.embed_size))  #  没有相加feature全部用了concat
         ### END YOUR CODE
         return embeddings
 
@@ -281,6 +283,8 @@ class WindowModel(NERModel):
         return train_op
 
     def preprocess_sequence_data(self, examples):
+        # example 是zip(words, labels)
+        # 需要转换为zip(windows, labels), window = word + context
         return make_windowed_data(examples, start=self.helper.START, end=self.helper.END, window_size=self.config.window_size)
 
     def consolidate_predictions(self, examples_raw, examples, preds):
@@ -328,7 +332,7 @@ class WindowModel(NERModel):
 
 def test_make_windowed_data():
     sentences = [[[1,1], [2,0], [3,3]]]
-    sentence_labels = [[1, 2, 3]]
+    sentence_labels = [[1, 2, 3]]  # just one sentence
     data = zip(sentences, sentence_labels)
     w_data = make_windowed_data(data, start=[5,0], end=[6,0], window_size=1)
 
@@ -375,7 +379,7 @@ def do_train(args):
     # Set up some parameters.
     config = Config()
     helper, train, dev, train_raw, dev_raw = load_and_preprocess_data(args)
-    embeddings = load_embeddings(args, helper)
+    embeddings = load_embeddings(args, helper)  # initial embeddings
     config.embed_size = embeddings.shape[1]
     helper.save(config.output_path)
 
@@ -384,7 +388,7 @@ def do_train(args):
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s: %(message)s'))
     logging.getLogger().addHandler(handler)
 
-    report = None #Report(Config.eval_output)
+    report = None  # Report(Config.eval_output)
 
     with tf.Graph().as_default():
         logger.info("Building model...",)

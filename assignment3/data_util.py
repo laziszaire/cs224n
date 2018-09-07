@@ -125,7 +125,7 @@ def load_and_preprocess_data(args):
     helper = ModelHelper.build(train)
 
     # now process all the input data.
-    train_data = helper.vectorize(train)
+    train_data = helper.vectorize(train)  # tok2id
     dev_data = helper.vectorize(dev)
 
     return helper, train_data, dev_data, train, dev
